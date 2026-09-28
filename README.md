@@ -13,7 +13,7 @@
 **Port nativo para Android de Castlevania: Portrait of Ruin baseado em Recompilação Estática (AOT) de Nintendo DS.**  
 *Sem emulação pesada tradicional — código ARM executado diretamente em C++ nativo a 60 FPS estáveis.*
 
-[Visão Geral](#-visão-geral) • [Screenshots](#-capturas-de-tela) • [Recursos](#-recursos-do-port) • [Instalação](#-como-instalar-e-jogar) • [Compilação](#-compilação-local) • [Créditos](#-créditos-e-reconhecimento) • [Aviso Legal](#-aviso-legal)
+[Visão Geral](#-visão-geral) • [Recursos](#-recursos-do-port) • [Instalação](#-como-instalar-e-jogar) • [Compilação](#-compilação-local) • [Créditos](#-créditos-e-reconhecimento) • [Aviso Legal](#-aviso-legal)
 
 </div>
 
@@ -26,20 +26,6 @@ Este projeto traz uma experiência nativa de **Castlevania: Portrait of Ruin** p
 Os binários de máquina dos processadores **ARM946E-S** (jogo/lógica principal) e **ARM7TDMI** (áudio/subsistemas) foram traduzidos previamente em código **C++ nativo otimizado**, que é compilado diretamente para a arquitetura **ARM64-v8a** do seu smartphone.
 
 O resultado é um consumo mínimo de bateria, tempo de resposta instantâneo, latência zero de entrada e framerate cravado em **60 FPS** com sincronismo de áudio e vídeo perfeito.
-
----
-
-## 📸 Capturas de Tela
-
-<div align="center">
-
-### Gameplay Nativo com Controles Virtuais no Android
-![Gameplay Castlevania Portrait of Ruin no Android](docs/images/screenshot_gameplay.jpg)
-
-### Menu de Configurações, Opacidade e Ajustes de Display
-![Configurações do Port Android](docs/images/screenshot_settings.jpg)
-
-</div>
 
 ---
 
