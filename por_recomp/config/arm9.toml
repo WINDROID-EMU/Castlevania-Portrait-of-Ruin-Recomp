@@ -1,0 +1,17 @@
+# arm9.toml for Castlevania Portrait of Ruin
+[program]
+name         = "Castlevania: Portrait of Ruin ARM9"
+id           = "por_arm9"
+cpu          = "arm9"
+isa          = "armv5te"
+load_address = 0x02000000
+size         = 0x001010D8
+entry_pc     = 0x02000800
+
+[identity]
+sha1 = "6c00d28182057dad1e548f685d3520b494791590"
+
+[[entry_point]]
+addr = 0x02000800
+mode = "arm"
+name = "_start"

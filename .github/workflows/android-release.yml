@@ -1,0 +1,142 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Publicar Release no GitHub?'
+        required: true
+        type: boolean
+        default: true
+      release_tag:
+        description: 'Tag da Release (ex: v1.0.0)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Android APK (arm64-v8a)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Android NDK & CMake
+        run: |
+          echo "Instalando NDK 26.1.10909125 e CMake 3.22.1..."
+          yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "ndk;26.1.10909125" "cmake;3.22.1"
+          echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/26.1.10909125" >> $GITHUB_ENV
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build Release APK
+        working-directory: android
+        run: |
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare APK & Generate Checksum
+        run: |
+          mkdir -p release-artifacts
+          RELEASE_APK=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -z "$RELEASE_APK" ]; then
+            echo "ERRO: Nenhum APK encontrado em android/app/build/outputs/apk/release!"
+            exit 1
+          fi
+          OUTPUT_APK="release-artifacts/CastlevaniaPoR-Android-arm64-v8a.apk"
+          cp "$RELEASE_APK" "$OUTPUT_APK"
+          cd release-artifacts
+          sha256sum "CastlevaniaPoR-Android-arm64-v8a.apk" > "CastlevaniaPoR-Android-arm64-v8a.apk.sha256"
+          echo "APK SHA-256:"
+          cat "CastlevaniaPoR-Android-arm64-v8a.apk.sha256"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CastlevaniaPoR-Android-APK
+          path: release-artifacts/*
+          if-no-files-found: error
+
+      - name: Determine Release Details
+        id: release_info
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+          else
+            TAG_NAME="v1.0.0-$(date +'%Y%m%d%H%M')"
+          fi
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "checksum=$(cat release-artifacts/CastlevaniaPoR-Android-arm64-v8a.apk.sha256 | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
+        with:
+          tag_name: ${{ steps.release_info.outputs.tag_name }}
+          name: Castlevania: Portrait of Ruin Recomp Android ${{ steps.release_info.outputs.tag_name }}
+          files: |
+            release-artifacts/CastlevaniaPoR-Android-arm64-v8a.apk
+            release-artifacts/CastlevaniaPoR-Android-arm64-v8a.apk.sha256
+          body: |
+            ## 🦇 Castlevania: Portrait of Ruin (NDS Recompilation) para Android
+            
+            Port nativo de **Castlevania: Portrait of Ruin** (Nintendo DS) executando diretamente em hardware ARM64 no Android através de recompilação estática de binários.
+            
+            ### 📱 Detalhes do Pacote
+            - **Arquivo:** `CastlevaniaPoR-Android-arm64-v8a.apk`
+            - **Arquitetura:** `arm64-v8a`
+            - **Versão mínima do Android:** Android 7.0 (Nougat, API 24+)
+            - **SHA-256:** `${{ steps.release_info.outputs.checksum }}`
+            
+            ---
+            
+            ### 📥 Como Instalar e Jogar
+            1. Baixe o arquivo `.apk` anexado abaixo e instale no seu celular Android.
+            2. Ao abrir o aplicativo pela primeira vez, toque em **"SELECIONAR ROM"**.
+            3. Selecione o arquivo da sua ROM limpa (dump legal) de *Castlevania: Portrait of Ruin (USA)* (`.nds`).
+               - **Hash esperado (SHA-1):** `c1fb223c706be6efd66827675eff2360a1605cdc`
+            4. O jogo será validado instantaneamente e iniciará a 60 FPS com controles virtuais na tela e suporte a gamepads Bluetooth/USB!
+            
+            ---
+            
+            ### ✨ Recursos
+            - ⚡ **60 FPS Estáveis:** Recompilação C++ estática sem overhead de emulador tradicional.
+            - 🎮 **Controles Virtuais Customizáveis:** Layout na tela com opacidade ajustável e feedback tátil (vibração).
+            - 🕹️ **Suporte a Gamepads:** Reconhecimento automático de controles Bluetooth e USB OTG.
+            - 🖥️ **Modos de Tela:** Alternância rápida entre tela única expandida e visão de mapa (Touch).
+            
+            ---
+            
+            ### 🏆 Créditos e Reconhecimentos
+            - **Ferramenta de Recompilação NDS:** [ndsrecomp](https://github.com/RetroPortingToolKit/ndsrecomp) por **Matthew Stanley (mstan)** e o coletivo **RetroPortingToolkit**.
+            - **Frontend & Recomp UI:** [RetroPortingToolkit/recomp-ui](https://github.com/RetroPortingToolkit/recomp-ui).
+            - **Emulação Base de Hardware & GPU3D:** Desenvolvido a partir do núcleo de precisão do projeto melonDS.
+            
+            *Nota Legal: Este projeto é um software de recompilação estática de código aberto. Nenhum arquivo proprietário ou ROM da Konami/Nintendo está embutido neste pacote.*
+          draft: false
+          prerelease: false

@@ -1,0 +1,104 @@
+{
+  "manifests_accepted": 5,
+  "manifests_rejected": 0,
+  "manifests_incomplete": false,
+  "rom_sha1": "c1fb223c706be6efd66827675eff2360a1605cdc",
+  "build_ids": [
+    "f6f1367"
+  ],
+  "rom_alias_findings": [
+    {
+      "cpu": "arm7",
+      "module": "arm7.bin",
+      "resident_base": "0x027CFC08",
+      "declared_base": null,
+      "pages": 4,
+      "guest_span": "0x027E1000..0x027F7000",
+      "module_span": "0x113F8..0x273F8",
+      "note": "resident at a base no bank declares; recompile the module at this base, no dumped bytes required"
+    },
+    {
+      "cpu": "arm7",
+      "module": "arm7.bin",
+      "resident_base": "0x037F7E50",
+      "declared_base": null,
+      "pages": 14,
+      "guest_span": "0x037F8000..0x03808000",
+      "module_span": "0x1B0..0x101B0",
+      "note": "resident at a base no bank declares; recompile the module at this base, no dumped bytes required"
+    },
+    {
+      "cpu": "arm9",
+      "module": "arm9.bin",
+      "resident_base": "0x01EFE920",
+      "declared_base": null,
+      "pages": 6,
+      "guest_span": "0x01FF8000..0x01FFE000",
+      "module_span": "0xF96E0..0xFF6E0",
+      "note": "resident at a base no bank declares; recompile the module at this base, no dumped bytes required"
+    },
+    {
+      "cpu": "arm9",
+      "module": "arm9.bin",
+      "resident_base": "0x02000000",
+      "declared_base": null,
+      "pages": 112,
+      "guest_span": "0x02000000..0x020BF000",
+      "module_span": "0x0..0xBF000",
+      "note": "resident at a base no bank declares; recompile the module at this base, no dumped bytes required"
+    }
+  ],
+  "pages_resolved_to_rom": 193,
+  "page_versions_total": 208,
+  "page_versions_not_in_rom": 15,
+  "entry_points_merged": 7479,
+  "entry_points_dropped_below_min_hits": 0,
+  "entry_points_placed_in_banks": 457,
+  "entry_points_by_target": {
+    "arm7_arm7_027cfc08": 16,
+    "arm7_arm7_037f7e50": 559,
+    "arm9_arm9_01efe920": 817,
+    "arm9_arm9_02000000": 2491,
+    "arm9_overlay_0005_021d56c0": 2485,
+    "arm9_overlay_0022_02234e80": 141,
+    "arm9_overlay_0043_022dc940": 408,
+    "arm9_overlay_0096_022ed880": 157,
+    "arm9_unresolved": 405
+  },
+  "banks_written": 14,
+  "interpreted_ranges": {
+    "arm9": 5072,
+    "arm7": 408
+  },
+  "span_promotion": {
+    "enabled": true,
+    "callers_folded_in": true,
+    "distinct_callers": 3676,
+    "dispatch_rows_read": {
+      "arm7": 8531,
+      "arm9": 73497
+    },
+    "interpreted_addresses_already_owned": 18818,
+    "min_span_hits": 1,
+    "max_span_seeds": 0,
+    "seeds": 5480,
+    "by_cpu": {
+      "arm7": {
+        "spans": 408,
+        "spans_above_min_hits": 408,
+        "spans_promoted": 408,
+        "entries_promoted": 54595698,
+        "entries_total": 54595698
+      },
+      "arm9": {
+        "spans": 5072,
+        "spans_above_min_hits": 5072,
+        "spans_promoted": 5072,
+        "entries_promoted": 16167483,
+        "entries_total": 16167483
+      }
+    }
+  },
+  "rejected": {},
+  "problems": []
+}

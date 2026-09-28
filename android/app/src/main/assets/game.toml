@@ -1,0 +1,16 @@
+[game]
+sha1 = "c1fb223c706be6efd66827675eff2360a1605cdc"
+
+[display]
+screen_layout = "single"
+adaptive_widescreen = "none"
+
+[system]
+startup_mode = "automatic"
+boot = "direct"
+generated_firmware = true
+freebios = true
+
+[cartridge]
+save_type = "eeprom"
+save_size = 65536

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Background Artwork: centerCrop guarantees 100% full screen fill without stretch and without black bars -->
+    <ImageView
+        android:id="@+id/img_title_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Castlevania Title"
+        android:scaleType="centerCrop"
+        android:src="@drawable/title_screen_bg" />
+
+    <!-- ROM selection / change button -->
+    <LinearLayout
+        android:id="@+id/btn_select_rom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/bg_rom_button"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:elevation="6dp">
+
+        <TextView
+            android:id="@+id/txt_select_rom_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📁"
+            android:textSize="14sp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/txt_select_rom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELECIONAR ROM"
+            android:textColor="#F3E5AB"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+    </LinearLayout>
+
+    <!-- Subtle bottom vignette for text legibility -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_vignette" />
+
+    <!-- Pulsing Press Start Prompt -->
+    <TextView
+        android:id="@+id/txt_press_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="28dp"
+        android:text="TOQUE NA TELA PARA INICIAR"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.12"
+        android:shadowColor="#E5A00D"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="16" />
+
+</FrameLayout>

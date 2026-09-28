@@ -1,0 +1,35 @@
+# Gradle build outputs and caches
+.gradle/
+build/
+app/build/
+app/.cxx/
+.cxx/
+
+# Local device / environment configuration
+local.properties
+app/local.properties
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+
+# Signing files
+*.jks
+*.keystore
+
+# APK / AAB artifacts
+*.apk
+*.aab
+
+# Copyrighted game dumps (should never be tracked in version control)
+app/src/main/assets/*.nds
+app/src/main/assets/*.rom
+app/src/main/assets/*.bin
+app/src/main/assets/*.sav
+app/src/main/assets/*.dsv
+!app/src/main/assets/game.toml
+
+# Scratch test files
+test*.py
+scratch/

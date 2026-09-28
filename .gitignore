@@ -1,0 +1,82 @@
+# ───────────────────────────────────────────────────────────────────────────
+# Copyrighted game and system dumps — NEVER commit to version control.
+# Dumps belong to the respective copyright owners; users provide their own legal backups.
+# ───────────────────────────────────────────────────────────────────────────
+*.nds
+*.NDS
+*.sav
+*.SAV
+*.dsv
+bios/*.rom
+bios/*.bin
+bios/*.ROM
+bios/*.cfg
+!bios/README.md
+
+# ───────────────────────────────────────────────────────────────────────────
+# Android Build Outputs & Local Configs
+# ───────────────────────────────────────────────────────────────────────────
+android/.gradle/
+android/app/.gradle/
+android/build/
+android/app/build/
+android/app/.cxx/
+android/.cxx/
+android/local.properties
+android/app/local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# Android assets (keep game.toml, ignore copyrighted dumps)
+android/app/src/main/assets/*.nds
+android/app/src/main/assets/*.rom
+android/app/src/main/assets/*.bin
+android/app/src/main/assets/*.sav
+!android/app/src/main/assets/game.toml
+
+# ───────────────────────────────────────────────────────────────────────────
+# Temporary & Profiling Artifacts
+# ───────────────────────────────────────────────────────────────────────────
+*-coverage-*.json
+performance-*.jsonl
+por_recomp/por_coverage.json
+--frames/
+por_recomp/test_gen/
+por_recomp/generated_backup/
+*.log
+*.out
+*.err
+dispatch_misses.log
+
+# ───────────────────────────────────────────────────────────────────────────
+# CMake / C++ Native Build Trees
+# ───────────────────────────────────────────────────────────────────────────
+build/
+build-*/
+build_*/
+cmake-build-*/
+*.o
+*.obj
+*.exe
+*.a
+*.lib
+*.so
+*.dylib
+
+# ───────────────────────────────────────────────────────────────────────────
+# IDE, Editors & OS Files
+# ───────────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.iml
+*.user
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Scratch test files
+test*.py
+scratch/

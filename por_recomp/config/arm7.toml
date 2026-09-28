@@ -1,0 +1,17 @@
+# arm7.toml for Castlevania Portrait of Ruin
+[program]
+name         = "Castlevania: Portrait of Ruin ARM7"
+id           = "por_arm7"
+cpu          = "arm7"
+isa          = "armv4t"
+load_address = 0x02380000
+size         = 0x000286B0
+entry_pc     = 0x02380000
+
+[identity]
+sha1 = "461064dfadccfe3a39a149b8719a11949a7d9d86"
+
+[[entry_point]]
+addr = 0x02380000
+mode = "arm"
+name = "_start"
