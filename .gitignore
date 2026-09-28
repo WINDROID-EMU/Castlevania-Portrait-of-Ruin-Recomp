@@ -80,3 +80,5 @@ __pycache__/
 # Scratch test files
 test*.py
 scratch/
+.git_backup/
+**/.git_backup/

@@ -1,6 +1,0 @@
-[submodule "ndsrecomp"]
-	path = ndsrecomp
-	url = https://github.com/RetroPortingToolKit/ndsrecomp.git
-[submodule "recomp-ui"]
-	path = recomp-ui
-	url = https://github.com/RetroPortingToolkit/recomp-ui.git
