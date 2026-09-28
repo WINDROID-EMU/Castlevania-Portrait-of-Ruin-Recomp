@@ -1,4 +1,4 @@
-# Castlevania: Portrait of Ruin — Native Android Port (NDS Recomp)
+# Castlevania: Portrait of Ruin —  (NDS Recomp)
 
 <div align="center">
 
