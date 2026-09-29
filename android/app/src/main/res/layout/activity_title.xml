@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <!-- Background Artwork: centerCrop guarantees 100% full screen fill without stretch and without black bars -->
+    <!-- Main Title Artwork: fitCenter ensures 100% of the image, Castlevania logo, and characters fit perfectly without cutting off the top -->
     <ImageView
         android:id="@+id/img_title_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="Castlevania Title"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/title_screen_bg" />
 
     <!-- ROM selection / change button -->

@@ -933,7 +933,7 @@ SDL_GameController* open_first_controller() {
 #endif
 }
 
-static int g_single_screen_active = 1; // Default to Screen 1 (Gameplay)
+static int g_single_screen_active = 1; // Default to Screen 1 (Bottom screen / Main gameplay & touch)
 static int g_single_screen_displayed = 1;
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -942,6 +942,17 @@ static int g_single_fill_out_h = 0;
 static int g_screen_aspect_mode = 0; // 0 = 4:3 Fit, 1 = Stretch Fullscreen, 2 = Crop Zoom
 static int g_video_filter_mode = 0;  // 0 = Nearest, 1 = Linear, 2 = CRT Scanlines, 3 = LCD Grid
 static int g_internal_resolution_scale = 1;
+
+static inline bool por_is_in_game() {
+    BusRegion main_ram{};
+    if (!bus_get_region("mainram", &main_ram)) return false;
+    constexpr uint32_t kBase = 0x02000000u;
+    constexpr uint32_t kPlayer1Ptr = 0x021154B8u;
+    if (kPlayer1Ptr + 4 - kBase > main_ram.len) return false;
+    uint32_t p1 = 0;
+    std::memcpy(&p1, main_ram.ptr + (kPlayer1Ptr - kBase), sizeof(p1));
+    return (p1 >= 0x02000000u && p1 < 0x02400000u);
+}
 #endif
 
 static inline bool is_screen_blank(const uint32_t* pixels, int width, int height) {
@@ -1325,6 +1336,11 @@ void runtime_menu_save(void* context) {
 
 bool runtime_menu_key_input(SDL_Scancode scancode,
                             RecompRuntimeUiInput* input) {
+#if defined(__ANDROID__)
+    (void)scancode;
+    (void)input;
+    return false;
+#else
     if (!input) return false;
     switch (scancode) {
         case SDL_SCANCODE_ESCAPE:
@@ -1352,10 +1368,16 @@ bool runtime_menu_key_input(SDL_Scancode scancode,
         default:
             return false;
     }
+#endif
 }
 
 bool runtime_menu_controller_input(SDL_GameControllerButton button,
                                    RecompRuntimeUiInput* input) {
+#if defined(__ANDROID__)
+    (void)button;
+    (void)input;
+    return false;
+#else
     if (!input) return false;
     switch (button) {
         case SDL_CONTROLLER_BUTTON_START:
@@ -1383,6 +1405,7 @@ bool runtime_menu_controller_input(SDL_GameControllerButton button,
         default:
             return false;
     }
+#endif
 }
 
 const uint32_t* runtime_menu_overlay(RecompRuntimeUi* ui,
@@ -2080,6 +2103,10 @@ PresentationTicks present_screens(FrontendPresentation& presentation,
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+#if defined(__ANDROID__)
+        const bool in_game = por_is_in_game();
+        int cur = g_single_screen_active;
+#else
         const bool top_blank = is_screen_blank(top_pixels, top_width, kScreenHeight);
         const bool bottom_blank = is_screen_blank(bottom_pixels, bottom_width, kScreenHeight);
 
@@ -2089,6 +2116,7 @@ PresentationTicks present_screens(FrontendPresentation& presentation,
         } else if (top_blank && !bottom_blank) {
             cur = 1; // Pure gameplay
         }
+#endif
         g_single_screen_displayed = cur;
 
 #if defined(__ANDROID__)
@@ -2132,9 +2160,18 @@ PresentationTicks present_screens(FrontendPresentation& presentation,
         if (cur != last_logged_cur) {
             last_logged_cur = cur;
             __android_log_print(ANDROID_LOG_INFO, "nds_runner",
-                "[screen] cur=%d (top_blank=%d, btm_blank=%d) out=(%d,%d) rect=(%d,%d,%d,%d)",
-                cur, (int)top_blank, (int)bottom_blank, out_w, out_h,
+                "[screen] cur=%d (in_game=%d) out=(%d,%d) rect=(%d,%d,%d,%d)",
+                cur, (int)in_game, out_w, out_h,
                 screen_rect.x, screen_rect.y, screen_rect.w, screen_rect.h);
+        }
+
+        static int s_frame_diag = 0;
+        if (++s_frame_diag % 60 == 0) {
+            __android_log_print(ANDROID_LOG_INFO, "nds_runner",
+                "FRAME %d: cur=%d in_game=%d top[0,100,1000,20k]=%08x %08x %08x %08x btm=%08x %08x %08x %08x",
+                s_frame_diag, cur, (int)in_game,
+                top_pixels[0], top_pixels[100], top_pixels[1000], top_pixels[20000],
+                bottom_pixels[0], bottom_pixels[100], bottom_pixels[1000], bottom_pixels[20000]);
         }
 #else
         const SDL_Rect screen_rect{
@@ -2546,11 +2583,15 @@ int nds_run_interactive_frontend(const NdsFrontendOptions& initial_options) {
     runtime_menu_config.theme = "nds";
     runtime_menu_config.accept_label = "A / Enter";
     runtime_menu_config.back_label = "B / Backspace";
+#if !defined(__ANDROID__)
     RecompRuntimeUi* runtime_ui =
         recomp_runtime_ui_create(&runtime_menu_config);
     if (!runtime_ui) {
         std::fprintf(stderr, "[sdl] runtime menu unavailable\n");
     }
+#else
+    RecompRuntimeUi* runtime_ui = nullptr;
+#endif
     bool compute_failed = false;
     bool mouse_down = false;
     bool touch_release_pending = false;
@@ -3429,6 +3470,8 @@ int nds_run_interactive_frontend(const NdsFrontendOptions& initial_options) {
                 } else if (process_mph_prime_pad(MphPadInputKind::Button, button,
                                           true)) {
                     // Consumed by Prime Controls.
+                } else if (button == SDL_CONTROLLER_BUTTON_RIGHTSTICK || button == SDL_CONTROLLER_BUTTON_LEFTSTICK) {
+                    g_single_screen_active ^= 1;
                 } else if (const uint16_t bit = controller_bit(button)) {
                     controller_pressed |= bit;
                     publish_keys();

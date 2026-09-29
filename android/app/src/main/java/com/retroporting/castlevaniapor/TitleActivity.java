@@ -62,7 +62,6 @@ public class TitleActivity extends Activity {
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(lp);
         }
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         setContentView(R.layout.activity_title);
 
@@ -81,8 +80,14 @@ public class TitleActivity extends Activity {
         // Pulsing glow animation
         startPulsingAnimation();
 
-        // Touch to start or select ROM
-        mRootView.setOnClickListener(v -> onScreenTapped());
+        // Touch to start or select ROM - support tapping anywhere on the screen
+        if (mRootView != null) {
+            mRootView.setOnClickListener(v -> onScreenTapped());
+        }
+        View imgBg = findViewById(R.id.img_title_bg);
+        if (imgBg != null) {
+            imgBg.setOnClickListener(v -> onScreenTapped());
+        }
 
         checkAndExtractAssets();
     }
@@ -269,12 +274,12 @@ public class TitleActivity extends Activity {
                 if (mBtnSelectRom != null) mBtnSelectRom.setEnabled(true);
                 if (valid) {
                     mHasRom = true;
-                    mTxtPressStart.setText("ROM VALIDADA! TOQUE PARA INICIAR");
+                    mTxtPressStart.setText("ROM VALIDADA! TOQUE NA TELA PARA INICIAR");
                     if (mTxtSelectRom != null) {
                         mTxtSelectRom.setText("TROCAR ROM");
                     }
                     Toast.makeText(TitleActivity.this, "ROM validada com sucesso!", Toast.LENGTH_SHORT).show();
-                    launchGame();
+                    // Do NOT auto-launch; game only starts when the user taps the screen
                 } else {
                     mTxtPressStart.setText("ROM INVÁLIDA! SELECIONE A ROM CORRETA");
                     Toast.makeText(TitleActivity.this,

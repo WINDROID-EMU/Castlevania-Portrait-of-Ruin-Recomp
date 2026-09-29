@@ -60,7 +60,7 @@ public class VirtualControlsOverlay extends View {
     private boolean mIsCharlotte = false;
     private boolean mCanSwitch = false;
     private boolean mInGame = false;
-    private int mCurScreen = 1; // 1 = bottom (main gameplay/title), 0 = top (map/stats)
+    private int mCurScreen = 1; // 0 = top (map/stats), 1 = bottom (main gameplay & menus)
 
     // Customization & Settings
     private float mButtonOpacity = 1.0f;
@@ -124,7 +124,6 @@ public class VirtualControlsOverlay extends View {
                     needInvalidate = true;
                 }
                 if (!mInGame && inGame) {
-                    // Transitioned from title/menu into gameplay! Switch to bottom gameplay screen
                     nativeSetSingleScreen(1);
                     curScreen = 1;
                 }
